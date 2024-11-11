@@ -1,0 +1,14 @@
+web       1:469825645449:web:00753afe809dcfc3df0f58
+android   1:469825645449:android:5d47374966e80440df0f58
+ios       1:469825645449:ios:4f4218929732799cdf0f58
+macos     1:469825645449:ios:4f4218929732799cdf0f58
+windows   1:469825645449:web:0272f24f8874cf2bdf0f58
+
+6E:78:B9:76:10:BE:F2:96:0B:34:79:12:6C:57:B7:7C:D1:89:B1:2E
+
+AD:D6:EC:67:E9:B3:EB:8A:69:E1:E6:01:77:66:D2:30:08:E6:B7:68:A2:AF:05:FE:D9:F1:FC:B8:17:0E:9D:DE
+
+
+
+
+keytool -list -v -keystore C:\Users\sdkum\.android\debug.keystore -alias androiddebugkey -storepass android -keypass android
