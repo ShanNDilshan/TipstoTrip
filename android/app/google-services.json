@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "829145040440",
+    "project_id": "tipstotrip-4075f",
+    "storage_bucket": "tipstotrip-4075f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:829145040440:android:a3bafecf23aa3f9c4048cd",
+        "android_client_info": {
+          "package_name": "com.example.prototype"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "829145040440-k613pcfmf75k18sa4824bua8c7srvkm2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBE8ktVRYCYyUujjAzQg3WdAk7q6q1ivYk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "829145040440-k613pcfmf75k18sa4824bua8c7srvkm2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "829145040440-g0cjmf7nual1hatdrbeg7mccj5ud8l19.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.prototype"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
