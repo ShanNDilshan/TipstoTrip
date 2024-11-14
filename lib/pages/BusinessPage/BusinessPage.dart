@@ -6,18 +6,11 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:path/path.dart';
-import 'package:prototype/components/ButtonOne.dart';
 import 'package:prototype/components/TextInputArea.dart';
-import 'package:prototype/components/button_colored.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:uuid/uuid.dart';
-import 'package:http/http.dart' as http;
 
 class BusinessPage extends StatefulWidget {
   const BusinessPage(

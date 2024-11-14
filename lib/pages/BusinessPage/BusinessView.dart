@@ -35,6 +35,7 @@ class Businessview extends StatelessWidget {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Text("Test Text"),
                               CircleAvatar(
                                 radius: 35,
                                 backgroundImage: NetworkImage(

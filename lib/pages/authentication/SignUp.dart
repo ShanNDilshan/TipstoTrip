@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:prototype/components/ButtonOne.dart';
 import 'package:prototype/components/TextInputArea.dart';
-import 'package:prototype/pages/HomePage.dart';
 import 'package:prototype/pages/authentication/SignIn.dart';
-import 'package:prototype/pages/authentication/SignUpPageTwo.dart';
 import 'package:quickalert/quickalert.dart';
 
 class SignUp extends StatefulWidget {
@@ -77,6 +75,10 @@ class _SignUpState extends State<SignUp> {
         Navigator.pop(context);
       } catch (e) {
         print(e);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => SignUp()),
+        );
       }
 
       // Once signed in, return the UserCredential

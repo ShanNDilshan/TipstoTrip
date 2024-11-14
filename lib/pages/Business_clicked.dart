@@ -7,6 +7,7 @@ import 'package:prototype/pages/EventInfoPage.dart';
 import 'package:prototype/pages/PostEventPage.dart';
 import 'package:prototype/pages/PostOffer.dart';
 import 'package:prototype/pages/PostUpdate.dart';
+import 'package:prototype/pages/showbusinesstwo.dart';
 
 class BusinessClickedPage extends StatefulWidget {
   final String iD;
@@ -28,6 +29,7 @@ class _BusinessClickedPageState extends State<BusinessClickedPage> {
         children: [
           //Header
           Container(
+            // width: double.infinity,
             height: 250,
             color: const Color(0xFF15AAB7),
             padding: const EdgeInsets.all(10),
@@ -60,6 +62,26 @@ class _BusinessClickedPageState extends State<BusinessClickedPage> {
                     ],
                   ),
                 ]),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.4,
+                  height: 60,
+                ),
+                SizedBox(
+                    height: 90,
+                    width: 30,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          InkWell(
+                              //ToDo - Add business Delete Logic
+                              onTap: () async {
+                                showDeleteConfirmationDialog(
+                                    context, widget.iD);
+                              },
+                              child: Image.asset('assets/images/delete.png')),
+                        ],
+                      ),
+                    )),
               ],
             ),
           ),
@@ -395,4 +417,67 @@ class _BusinessClickedPageState extends State<BusinessClickedPage> {
       ),
     );
   }
+}
+
+// Future<String> deleteDocument(String Id) async {
+//   try {
+//     await FirebaseFirestore.instance.collection('business').doc(Id).delete();
+//     String successDlt = "deleted";
+//     return successDlt;
+//   } catch (e) {
+//     String failDlt = "failed";
+//     return failDlt;
+//   }
+// }
+
+Future<void> showDeleteConfirmationDialog(
+    BuildContext context, String Id) async {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false, // Prevent closing by tapping outside the dialog
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Delete Profile'),
+        content: Text('Are you sure you want to delete this profile?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the dialog without action
+            },
+            child: Text('No'),
+          ),
+          TextButton(
+            onPressed: () async {
+              // Perform the delete action
+              try {
+                await FirebaseFirestore.instance
+                    .collection('business')
+                    .doc(Id)
+                    .delete();
+                print("Profile deleted successfully");
+
+                // Close the dialog
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ShowBusinesstwoPage()),
+                );
+
+                // Optionally, navigate back or show a success message
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Profile deleted successfully")),
+                );
+              } catch (e) {
+                print("Error deleting profile: $e");
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Error deleting profile")),
+                );
+              }
+            },
+            child: Text('Yes'),
+          ),
+        ],
+      );
+    },
+  );
 }

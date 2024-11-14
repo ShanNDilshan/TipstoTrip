@@ -37,6 +37,7 @@ class _ShowBusinesstwoPageState extends State<ShowBusinesstwoPage> {
             right: 0,
             child: Container(
               height: 250,
+              width: double.infinity,
               color: const Color(0xFF15AAB7),
               padding: const EdgeInsets.all(10),
               child: Row(
