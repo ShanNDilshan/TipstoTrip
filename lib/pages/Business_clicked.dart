@@ -457,10 +457,11 @@ Future<void> showDeleteConfirmationDialog(
                 print("Profile deleted successfully");
 
                 // Close the dialog
-                Navigator.pushReplacement(
+                await Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ShowBusinesstwoPage()),
+                      builder: (context) => const ShowBusinesstwoPage()),
+                  (Route<dynamic> route) => false,
                 );
 
                 // Optionally, navigate back or show a success message
