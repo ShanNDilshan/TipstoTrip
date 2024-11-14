@@ -1,12 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:flutter/material.dart';
-
 import 'package:prototype/components/MyBusinessContainerRounded.dart';
 import 'package:prototype/components/button_colored.dart';
 import 'package:prototype/pages/BusinessPage/BusinessForm.dart';
-
 import 'package:prototype/pages/BusinessPage/BusinessView.dart';
 import 'package:prototype/pages/Profile/EditProfile.dart';
 import 'package:prototype/pages/authentication/AuthBase.dart';
@@ -37,6 +34,19 @@ class _ProfilePageState extends State<ProfilePage> {
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: Text("Loading"),
+                    );
+                  } else if (!snapshot.hasData ||
+                      !(snapshot.data?.exists ?? false)) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AuthBase()),
+                        (Route<dynamic> route) => false,
+                      );
+                    });
                     return const Center(
                       child: Text("Loading"),
                     );
@@ -336,6 +346,29 @@ class _ProfilePageState extends State<ProfilePage> {
                               button_colored(isSelected: false, text: title)
                           ],
                         ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Align(
+                          alignment: Alignment.bottomLeft,
+                          child: Column(
+                            children: [
+                              InkWell(
+                                onTap: () async {
+                                  setState(() {
+                                    deleteProfile(context);
+                                  });
+                                },
+                                child: SizedBox(
+                                    height: 50,
+                                    width: 50,
+                                    child: Image.asset(
+                                        'assets/images/delete.png')),
+                              ),
+                              const Text("Delete Profile")
+                            ],
+                          ),
+                        )
                       ],
                     );
                   }
@@ -345,4 +378,57 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+}
+
+Future<void> deleteProfile(BuildContext context) async {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false, // Prevent closing by tapping outside the dialog
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Delete Profile'),
+        content: const Text('Are you sure you want to delete this profile?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the dialog without action
+            },
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () async {
+              try {
+                // Delete the profile from Firestore
+                await FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(FirebaseAuth.instance.currentUser!.email!)
+                    .delete();
+
+                // Sign out the user
+                await FirebaseAuth.instance.signOut();
+
+                // Navigate to the AuthBase page, clearing the back stack
+                await Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AuthBase()),
+                  (Route<dynamic> route) => false,
+                );
+
+                // Show a success message
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Profile deleted successfully")),
+                );
+              } catch (e) {
+                print("Error deleting profile: $e");
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Error deleting profile")),
+                );
+              }
+            },
+            child: Text('Yes'),
+          ),
+        ],
+      );
+    },
+  );
 }
