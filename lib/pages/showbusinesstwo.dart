@@ -124,7 +124,7 @@ class _ShowBusinesstwoPageState extends State<ShowBusinesstwoPage> {
                                 ),
                                 const SizedBox(height: 10),
                                 Text(
-                                  docs[index]['business_category'],
+                                  docs[index]['business_name'],
                                   style: const TextStyle(
                                     fontSize: 10,
                                     fontWeight: FontWeight.bold,

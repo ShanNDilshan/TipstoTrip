@@ -52,7 +52,7 @@ class _BusinessClickedPageState extends State<BusinessClickedPage> {
                       Padding(
                         padding: const EdgeInsets.only(left: 40.0, bottom: 10),
                         child: Text(
-                          widget.doc[widget.ind]['business_category'],
+                          widget.doc[widget.ind]['business_name'],
                           style: const TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.bold,

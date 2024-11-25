@@ -43,7 +43,7 @@ class Businessview extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                doc['business_category'],
+                                doc['business_name'],
                                 style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
@@ -77,7 +77,7 @@ class Businessview extends StatelessWidget {
                                   builder: (context) => BusinessPage(
                                     businessID: BusinessID,
                                     businessImageUrl: doc['image'],
-                                    businessName: doc['business_category'],
+                                    businessName: doc['business_name'],
                                   ),
                                 ),
                               );

@@ -105,8 +105,9 @@ class _PostEventPageState extends State<PostEventPage> {
             'about': aboutEvent.text,
             'businessImage': widget.doc[widget.ind]
                 ['image'], // Using business image from passed data
-            'businessName': widget.doc[widget.ind][
-                'business_category'], // Using business category from passed data
+            'businessName': widget.doc[widget.ind]
+                ['business_name'], // Using business category from passed data
+            'business_category': widget.doc[widget.ind]['business_category'],
             'date': eventDate.text,
             'going': [], // Empty array for going
             'saved': [], // Empty array for saved
@@ -186,7 +187,7 @@ class _PostEventPageState extends State<PostEventPage> {
                       Padding(
                         padding: const EdgeInsets.only(left: 40.0, bottom: 10),
                         child: Text(
-                          widget.doc[widget.ind]['business_category'],
+                          widget.doc[widget.ind]['business_name'],
                           style: const TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.bold,

@@ -28,6 +28,7 @@ class _BusinessFormState extends State<BusinessForm> {
   TextEditingController BLC = TextEditingController();
   TextEditingController MAC = TextEditingController();
   TextEditingController BWSUC = TextEditingController();
+  TextEditingController BusinessName = TextEditingController();
   UploadTask? uploadTask;
   String countryValue = "";
   String stateValue = "";
@@ -35,6 +36,7 @@ class _BusinessFormState extends State<BusinessForm> {
   String address = "";
 
   String? selectedBusinessCategory; // To store selected category
+  //Change this
   final List<String> businessCategories = [
     'Transportation',
     'Accommodation',
@@ -105,6 +107,7 @@ class _BusinessFormState extends State<BusinessForm> {
         try {
           await FirebaseFirestore.instance.collection('business').doc(uid).set({
             'business_category': BCC.text,
+            'business_name': BusinessName.text.trim(),
             'address_line1': AL1C.text,
             'address_line2': AL2C.text,
             'address_line3': AL3C.text,
@@ -155,11 +158,14 @@ class _BusinessFormState extends State<BusinessForm> {
                         const SizedBox(
                           height: 15,
                         ),
-                        // TextInputArea(
-                        //   label: "Business category ",
-                        //   TextEditingController: BCC,
-                        //   icon: const Icon(null),
-                        // ),
+                        TextInputArea(
+                          label: "Business Name",
+                          TextEditingController: BusinessName,
+                          icon: const Icon(null),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
                         //Equvilant For Business Category Textarea
                         Container(
                           decoration: BoxDecoration(

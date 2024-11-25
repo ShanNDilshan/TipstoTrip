@@ -54,8 +54,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '829145040440',
     projectId: 'tipstotrip-4075f',
     storageBucket: 'tipstotrip-4075f.appspot.com',
-    androidClientId: '829145040440-6qas2l14bppn1nqfg8f76qu3md9u46sr.apps.googleusercontent.com',
-    iosClientId: '829145040440-g0cjmf7nual1hatdrbeg7mccj5ud8l19.apps.googleusercontent.com',
+    androidClientId:
+        '829145040440-6qas2l14bppn1nqfg8f76qu3md9u46sr.apps.googleusercontent.com',
+    iosClientId:
+        '829145040440-g0cjmf7nual1hatdrbeg7mccj5ud8l19.apps.googleusercontent.com',
     iosBundleId: 'com.example.prototype',
   );
 
@@ -74,8 +76,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '829145040440',
     projectId: 'tipstotrip-4075f',
     storageBucket: 'tipstotrip-4075f.appspot.com',
-    androidClientId: '829145040440-6qas2l14bppn1nqfg8f76qu3md9u46sr.apps.googleusercontent.com',
-    iosClientId: '829145040440-g0cjmf7nual1hatdrbeg7mccj5ud8l19.apps.googleusercontent.com',
+    androidClientId:
+        '829145040440-6qas2l14bppn1nqfg8f76qu3md9u46sr.apps.googleusercontent.com',
+    iosClientId:
+        '829145040440-g0cjmf7nual1hatdrbeg7mccj5ud8l19.apps.googleusercontent.com',
     iosBundleId: 'com.example.prototype',
   );
 
@@ -87,5 +91,4 @@ class DefaultFirebaseOptions {
     authDomain: 'tipstotrip-4075f.firebaseapp.com',
     storageBucket: 'tipstotrip-4075f.appspot.com',
   );
-
 }
