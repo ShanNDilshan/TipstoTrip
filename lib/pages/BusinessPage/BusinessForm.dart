@@ -6,8 +6,12 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:prototype/components/ButtonOne.dart';
+import 'package:prototype/components/LocationPicker.dart';
 import 'package:prototype/components/TextInputArea.dart';
+import 'package:prototype/map_page.dart';
 import 'package:uuid/uuid.dart';
 
 class BusinessForm extends StatefulWidget {
@@ -18,6 +22,10 @@ class BusinessForm extends StatefulWidget {
 }
 
 class _BusinessFormState extends State<BusinessForm> {
+  String selectedAddress = '';
+  String _locationError = '';
+  bool _isMapInitialized = false;
+  LatLng? selectedLocation;
   final _formKey = GlobalKey<FormState>();
   bool isloading = false;
   PlatformFile? pickedFile;
@@ -45,6 +53,130 @@ class _BusinessFormState extends State<BusinessForm> {
     'Connected Industries',
     'Adventure and Sport'
   ];
+
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    try {
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        setState(() {
+          _locationError =
+              'Location services are disabled. Please enable the services';
+        });
+        return false;
+      }
+
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          setState(() {
+            _locationError = 'Location permissions are denied';
+          });
+          return false;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        setState(() {
+          _locationError = 'Location permissions are permanently denied';
+        });
+        return false;
+      }
+
+      return true;
+    } catch (e) {
+      setState(() {
+        _locationError = 'Error accessing location services: $e';
+      });
+      return false;
+    }
+  }
+
+  Future<void> _showLocationPicker() async {
+    try {
+      final hasPermission = await _handleLocationPermission();
+      if (!hasPermission) {
+        // Show error dialog
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Location Error'),
+              content: Text(_locationError),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('OK'),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
+            );
+          },
+        );
+        return;
+      }
+
+      final Position position = await Geolocator.getCurrentPosition();
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LocationPickerMap(
+            initialPosition: LatLng(position.latitude, position.longitude),
+          ),
+        ),
+      );
+
+      if (result != null && result is Map<String, dynamic>) {
+        setState(() {
+          selectedLocation = result['location'];
+          selectedAddress = result['address'];
+          BLC.text = selectedAddress;
+        });
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: Text('Failed to access location: $e'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error('Location permissions are permanently denied');
+    }
+
+    return await Geolocator.getCurrentPosition();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -250,11 +382,52 @@ class _BusinessFormState extends State<BusinessForm> {
                         const SizedBox(
                           height: 15,
                         ),
-                        TextInputArea(
-                          label: "Business Location (use google map)",
-                          TextEditingController: BLC,
-                          icon: const Icon(null),
+
+                        //ToDo - Change this in here
+                        // TextInputArea(
+                        //   label: "Business Location (use google map)",
+                        //   TextEditingController: BLC,
+                        //   icon: const Icon(null),
+                        // ),
+
+                        GestureDetector(
+                          onTap: () {
+                            try {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => MapScreen()));
+                            } catch (e) {
+                              print(e);
+                            }
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 15),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    selectedAddress.isEmpty
+                                        ? 'Select Business Location'
+                                        : selectedAddress,
+                                    style: TextStyle(
+                                      color: selectedAddress.isEmpty
+                                          ? Colors.grey
+                                          : Colors.black,
+                                    ),
+                                  ),
+                                ),
+                                const Icon(Icons.location_on),
+                              ],
+                            ),
+                          ),
                         ),
+
                         const SizedBox(
                           height: 15,
                         ),

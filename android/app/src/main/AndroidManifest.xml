@@ -4,11 +4,22 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Queries section must be outside the application tag -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT" />
+            <data android:mimeType="text/plain" />
+        </intent>
+    </queries>
+
     <application
         android:label="prototype"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyC3s_-UH3lsrmhkJk4kGBPpPiHcw4s1EP8" />
         <!-- Main Activity Configuration -->
         <activity
             android:name=".MainActivity"
@@ -20,9 +31,7 @@
             android:windowSoftInputMode="adjustResize">
 
             <!-- API Key for Google Maps -->
-            <meta-data
-                android:name="com.google.android.geo.API_KEY"
-                android:value="AIzaSyBeIhO2qQosow60PihvjuIpxRk1l2gpiII" />
+
 
             <!-- Flutter Embedding Metadata -->
             <meta-data
@@ -38,14 +47,5 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!-- Additional Metadata -->
-        <!-- Required to query activities that can process text -->
-        <queries>
-            <intent>
-                <action android:name="android.intent.action.PROCESS_TEXT" />
-                <data android:mimeType="text/plain" />
-            </intent>
-        </queries>
     </application>
 </manifest>

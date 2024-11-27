@@ -1,9 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
+import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-
 import 'package:prototype/firebase_options.dart';
-
 import 'package:prototype/pages/authentication/AuthBase.dart';
 import 'package:prototype/pages/notificationPage.dart';
 
@@ -11,6 +11,12 @@ void main() async {
   //Remove this method to stop OneSignal Debugging
 
   WidgetsFlutterBinding.ensureInitialized();
+
+  final GoogleMapsFlutterPlatform mapsImplementation =
+      GoogleMapsFlutterPlatform.instance;
+  if (mapsImplementation is GoogleMapsFlutterAndroid) {
+    mapsImplementation.useAndroidViewSurface = true;
+  }
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
