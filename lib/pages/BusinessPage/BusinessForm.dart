@@ -11,7 +11,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:prototype/components/ButtonOne.dart';
 import 'package:prototype/components/LocationPicker.dart';
 import 'package:prototype/components/TextInputArea.dart';
-import 'package:prototype/map_page.dart';
 import 'package:uuid/uuid.dart';
 
 class BusinessForm extends StatefulWidget {
@@ -391,16 +390,7 @@ class _BusinessFormState extends State<BusinessForm> {
                         // ),
 
                         GestureDetector(
-                          onTap: () {
-                            try {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => MapScreen()));
-                            } catch (e) {
-                              print(e);
-                            }
-                          },
+                          onTap: _showLocationPicker,
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 15, vertical: 15),
