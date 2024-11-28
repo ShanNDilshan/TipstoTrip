@@ -327,12 +327,21 @@ class _PostEventPageState extends State<PostEventPage> {
                             height: 35,
                           ),
                           InkWell(
-                            onTap: () => AddEvent(),
-                            child: const ButtonOne(
-                                label: "Submit Your Event",
-                                icon: Icon(null),
-                                color: Color.fromRGBO(53, 208, 219, 1),
-                                textColor: Colors.black),
+                            onTap: () {
+                              if (!isloading) {
+                                AddEvent();
+                              }
+                            },
+                            child: isloading
+                                ? Center(
+                                    child: CircularProgressIndicator(),
+                                  )
+                                : ButtonOne(
+                                    label: "Submit Event",
+                                    icon: Icon(null),
+                                    color: Color.fromRGBO(53, 208, 219, 1),
+                                    textColor: Colors.black,
+                                  ),
                           ),
                           const SizedBox(
                             height: 45,

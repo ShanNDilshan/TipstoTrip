@@ -320,13 +320,23 @@ class _PostOfferState extends State<PostOffer> {
                             height: 35,
                           ),
                           InkWell(
-                            onTap: () => AddEvent(),
-                            child: const ButtonOne(
-                                label: "Submit Offer Post",
-                                icon: Icon(null),
-                                color: Color.fromRGBO(53, 208, 219, 1),
-                                textColor: Colors.black),
+                            onTap: () {
+                              if (!isloading) {
+                                AddEvent();
+                              }
+                            },
+                            child: isloading
+                                ? Center(
+                                    child: CircularProgressIndicator(),
+                                  )
+                                : ButtonOne(
+                                    label: "Submit Offer Post",
+                                    icon: Icon(null),
+                                    color: Color.fromRGBO(53, 208, 219, 1),
+                                    textColor: Colors.black,
+                                  ),
                           ),
+
                           const SizedBox(
                             height: 45,
                           ),

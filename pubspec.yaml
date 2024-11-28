@@ -59,6 +59,7 @@ dependencies:
   google_maps_flutter_android: ^2.14.11
   google_maps_flutter_platform_interface: ^2.9.5
   permission_handler: ^10.4.3
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:

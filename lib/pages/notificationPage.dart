@@ -19,162 +19,167 @@ class _NotificationPageState extends State<NotificationPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
       ),
-      body: Column(
-        children: [
-          StreamBuilder(
-            stream: FirebaseFirestore.instance
-                .collection('notifications')
-                .orderBy('posted', descending: true)
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                var docs = snapshot.data!.docs;
-                if (docs.length == 0) {
-                  return Center(child: Text('No Notifications'));
-                } else {
-                  return ListView.builder(
-                    physics: BouncingScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: docs.length,
-                    itemBuilder: (context, index) {
-                      if (docs[index]['watched']
-                          .contains(firebaseAuth.currentUser!.email)) {
-                        return SizedBox();
-                      } else {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10.0, vertical: 8),
-                          child: InkWell(
-                            onTap: () async {
-                              await FirebaseFirestore.instance
-                                  .collection('notifications')
-                                  .doc(docs[index]['id'])
-                                  .update({
-                                'watched': FieldValue.arrayUnion(
-                                  [firebaseAuth.currentUser!.email],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('notifications')
+                  .orderBy('posted', descending: true)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  var docs = snapshot.data!.docs;
+                  if (docs.length == 0) {
+                    return Center(child: Text('No Notifications'));
+                  } else {
+                    return ListView.builder(
+                      physics: BouncingScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: docs.length,
+                      itemBuilder: (context, index) {
+                        if (docs[index]['watched']
+                            .contains(firebaseAuth.currentUser!.email)) {
+                          return SizedBox();
+                        } else {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10.0, vertical: 8),
+                            child: InkWell(
+                              onTap: () async {
+                                await FirebaseFirestore.instance
+                                    .collection('notifications')
+                                    .doc(docs[index]['id'])
+                                    .update({
+                                  'watched': FieldValue.arrayUnion(
+                                    [firebaseAuth.currentUser!.email],
+                                  ),
+                                });
+                                print(
+                                    "In Progress Redirection : ${docs[index]['id']}");
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => EventInfoPage(
+                                          eventID: docs[index]['id']),
+                                    ));
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 8),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: Colors.white,
+                                  boxShadow: const [
+                                    BoxShadow(
+                                        color:
+                                            Color.fromARGB(255, 226, 225, 225),
+                                        spreadRadius: 5,
+                                        blurRadius: 5)
+                                  ],
                                 ),
-                              });
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => EventInfoPage(
-                                        eventID: docs[index]['id']),
-                                  ));
-                            },
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 8),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                color: Colors.white,
-                                boxShadow: const [
-                                  BoxShadow(
-                                      color: Color.fromARGB(255, 226, 225, 225),
-                                      spreadRadius: 5,
-                                      blurRadius: 5)
-                                ],
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  StreamBuilder(
-                                      stream: FirebaseFirestore.instance
-                                          .collection('business')
-                                          .doc(docs[index]['organizer'])
-                                          .snapshots(),
-                                      builder: (context, snapshot) {
-                                        if (!snapshot.hasData) {
-                                          return const CircularProgressIndicator();
-                                        } else {
-                                          var doc = snapshot.data;
-                                          return Row(
-                                            children: [
-                                              CircleAvatar(
-                                                radius: 30,
-                                                backgroundColor:
-                                                    Colors.blueAccent,
-                                                foregroundImage: NetworkImage(
-                                                  doc!['image'],
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    StreamBuilder(
+                                        stream: FirebaseFirestore.instance
+                                            .collection('business')
+                                            .doc(docs[index]['organizer'])
+                                            .snapshots(),
+                                        builder: (context, snapshot) {
+                                          if (!snapshot.hasData) {
+                                            return const CircularProgressIndicator();
+                                          } else {
+                                            var doc = snapshot.data;
+                                            return Row(
+                                              children: [
+                                                CircleAvatar(
+                                                  radius: 30,
+                                                  backgroundColor:
+                                                      Colors.blueAccent,
+                                                  foregroundImage: NetworkImage(
+                                                    doc!['image'],
+                                                  ),
                                                 ),
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    doc['business_category'],
-                                                    textAlign: TextAlign.left,
-                                                    style: const TextStyle(
-                                                      fontSize: 16,
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      doc['business_category'],
+                                                      textAlign: TextAlign.left,
+                                                      style: const TextStyle(
+                                                        fontSize: 16,
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
                                                     ),
-                                                  ),
-                                                  Text(
-                                                    docs[index]['name'],
-                                                    textAlign: TextAlign.left,
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      color: Colors.black,
+                                                    Text(
+                                                      docs[index]['name'],
+                                                      textAlign: TextAlign.left,
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                        color: Colors.black,
+                                                      ),
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          );
-                                        }
-                                      }),
-                                  if (docs[index]['type'] == "event")
-                                    Container(
-                                      height: 15,
-                                      width: 15,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(50),
-                                          color: Colors.red),
-                                    ),
-                                  if (docs[index]['type'] == "offer")
-                                    Container(
-                                      height: 15,
-                                      width: 15,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(50),
-                                          color: Colors.green),
-                                    ),
-                                  if (docs[index]['type'] == "post")
-                                    Container(
-                                      height: 15,
-                                      width: 15,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(50),
-                                          color: Colors.purple),
-                                    ),
-                                ],
+                                                  ],
+                                                ),
+                                              ],
+                                            );
+                                          }
+                                        }),
+                                    if (docs[index]['type'] == "event")
+                                      Container(
+                                        height: 15,
+                                        width: 15,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(50),
+                                            color: Colors.red),
+                                      ),
+                                    if (docs[index]['type'] == "offer")
+                                      Container(
+                                        height: 15,
+                                        width: 15,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(50),
+                                            color: Colors.green),
+                                      ),
+                                    if (docs[index]['type'] == "post")
+                                      Container(
+                                        height: 15,
+                                        width: 15,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(50),
+                                            color: Colors.purple),
+                                      ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      }
-                    },
+                          );
+                        }
+                      },
+                    );
+                  }
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
                   );
                 }
-              } else {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            },
-          )
-        ],
+              },
+            )
+          ],
+        ),
       ),
     );
   }
