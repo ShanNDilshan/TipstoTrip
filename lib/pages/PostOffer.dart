@@ -68,6 +68,26 @@ class _PostOfferState extends State<PostOffer> {
       });
     }
 
+    Future<bool> addToNotify(eventId, eventName) async {
+      List<String> watchedArray = [];
+      try {
+        await FirebaseFirestore.instance
+            .collection('notifications')
+            .doc(eventId)
+            .set({
+          'id': eventId,
+          'name': eventName,
+          'organizer': widget.iD,
+          'posted': offerTime.text,
+          'type': 'offer',
+          'watched': watchedArray
+        });
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
     //Save data in DB
 
     Future AddEvent() async {
@@ -95,7 +115,7 @@ class _PostOfferState extends State<PostOffer> {
 
           // Get current timestamp
           Timestamp currentTime = Timestamp.now();
-
+          addToNotify(eventId, offerName.text);
           // Add data to Firestore
           await FirebaseFirestore.instance
               .collection('events')
@@ -184,7 +204,7 @@ class _PostOfferState extends State<PostOffer> {
                       Padding(
                         padding: const EdgeInsets.only(left: 40.0, bottom: 10),
                         child: Text(
-                          widget.doc[widget.ind]['business_category'],
+                          widget.doc[widget.ind]['business_name'],
                           style: const TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.bold,

@@ -146,6 +146,26 @@ class _UpdateEventPageState extends State<UpdateEventPage> {
     }
   }
 
+  Future<bool> addToNotify(eventId, eventName) async {
+    List<String> watchedArray = [];
+    try {
+      await FirebaseFirestore.instance
+          .collection('notifications')
+          .doc(eventId)
+          .set({
+        'id': eventId,
+        'name': eventName,
+        'organizer': widget.iD,
+        'posted': updateEventDate.text,
+        'type': 'UPDATE',
+        'watched': watchedArray
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<void> updateEvent() async {
     if (_formKey.currentState!.validate()) {
       if (selectedEventId == null) {
@@ -207,6 +227,9 @@ class _UpdateEventPageState extends State<UpdateEventPage> {
             .update(updateData);
 
         if (mounted) {
+          print("Selected Event Id : ${selectedEventId}");
+          addToNotify(selectedEventId, updateData['name']);
+
           setState(() => isloading = false);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Event updated successfully')),
@@ -324,7 +347,7 @@ class _UpdateEventPageState extends State<UpdateEventPage> {
                           padding:
                               const EdgeInsets.only(left: 40.0, bottom: 10),
                           child: Text(
-                            widget.doc[widget.ind]['business_category'],
+                            widget.doc[widget.ind]['business_name'],
                             style: const TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.bold,

@@ -69,6 +69,26 @@ class _PostEventPageState extends State<PostEventPage> {
       });
     }
 
+    Future<bool> addToNotify(eventId, eventName) async {
+      List<String> watchedArray = [];
+      try {
+        await FirebaseFirestore.instance
+            .collection('notifications')
+            .doc(eventId)
+            .set({
+          'id': eventId,
+          'name': eventName,
+          'organizer': widget.iD,
+          'posted': eventDate.text,
+          'type': 'event',
+          'watched': watchedArray
+        });
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
     //Save data in DB
 
     Future AddEvent() async {
@@ -96,6 +116,8 @@ class _PostEventPageState extends State<PostEventPage> {
 
           // Get current timestamp
           Timestamp currentTime = Timestamp.now();
+
+          addToNotify(eventId, eventName.text);
 
           // Add data to Firestore
           await FirebaseFirestore.instance

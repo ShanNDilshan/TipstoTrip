@@ -285,8 +285,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                           );
                                         },
                                         child: MyBusinessContainerRounded(
-                                          name: docs[index]
-                                              ['business_category'],
+                                          name: docs[index]['business_name'],
                                           imageLink: docs[index]['image'],
                                         ),
                                       );

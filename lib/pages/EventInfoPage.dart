@@ -27,7 +27,9 @@ class _EventInfoPageState extends State<EventInfoPage> {
               return const CircularProgressIndicator();
             } else {
               var doc = snapshot.data;
+              print(doc.toString());
               if (doc == null) return const CircularProgressIndicator();
+
               return SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
