@@ -74,7 +74,7 @@ class _SignUpState extends State<SignUp> {
 
         Navigator.pop(context);
       } catch (e) {
-        print(e);
+        print("Singup Error is : ${e}");
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => SignUp()),

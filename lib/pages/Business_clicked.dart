@@ -30,8 +30,23 @@ class _BusinessClickedPageState extends State<BusinessClickedPage> {
           //Header
           Container(
             // width: double.infinity,
-            height: 250,
-            color: const Color(0xFF15AAB7),
+            height: 200,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                bottomRight: Radius.circular(30.0),
+                bottomLeft: Radius.circular(30.0),
+              ),
+              color: const Color.fromARGB(255, 255, 255, 255),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+
             padding: const EdgeInsets.all(10),
             child: Row(
               children: [
@@ -54,9 +69,9 @@ class _BusinessClickedPageState extends State<BusinessClickedPage> {
                         child: Text(
                           widget.doc[widget.ind]['business_name'],
                           style: const TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                          ),
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(255, 0, 0, 0)),
                         ),
                       ),
                     ],
@@ -68,10 +83,13 @@ class _BusinessClickedPageState extends State<BusinessClickedPage> {
                 ),
                 SizedBox(
                     height: 90,
-                    width: 30,
+                    width: 50,
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
+                          const SizedBox(
+                            height: 20,
+                          ),
                           InkWell(
                               //ToDo - Add business Delete Logic
                               onTap: () async {
@@ -79,6 +97,11 @@ class _BusinessClickedPageState extends State<BusinessClickedPage> {
                                     context, widget.iD);
                               },
                               child: Image.asset('assets/images/delete.png')),
+                          Text(
+                            "Delete",
+                            style: TextStyle(
+                                color: const Color.fromARGB(255, 0, 0, 0)),
+                          )
                         ],
                       ),
                     )),
@@ -92,6 +115,10 @@ class _BusinessClickedPageState extends State<BusinessClickedPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(
+                          Color.fromARGB(255, 255, 255, 255)),
+                    ),
                     onPressed: () {
                       Navigator.push(
                           context,
@@ -101,8 +128,16 @@ class _BusinessClickedPageState extends State<BusinessClickedPage> {
                                   doc: widget.doc,
                                   ind: widget.ind)));
                     },
-                    child: Text("Post Event")),
+                    child: Text(
+                      "Post Event",
+                      style:
+                          TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
+                    )),
                 ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(
+                          const Color.fromARGB(255, 255, 255, 255)),
+                    ),
                     onPressed: () {
                       Navigator.push(
                           context,
@@ -112,8 +147,14 @@ class _BusinessClickedPageState extends State<BusinessClickedPage> {
                                   doc: widget.doc,
                                   ind: widget.ind)));
                     },
-                    child: Text("Post Offer")),
+                    child: Text("Post Offer",
+                        style: TextStyle(
+                            color: const Color.fromARGB(255, 0, 0, 0)))),
                 ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(
+                          const Color.fromARGB(255, 255, 255, 255)),
+                    ),
                     onPressed: () {
                       Navigator.push(
                           context,
@@ -123,7 +164,9 @@ class _BusinessClickedPageState extends State<BusinessClickedPage> {
                                   doc: widget.doc,
                                   ind: widget.ind)));
                     },
-                    child: Text("Post Update")),
+                    child: Text("Post Update",
+                        style: TextStyle(
+                            color: const Color.fromARGB(255, 0, 0, 0)))),
               ],
             ),
           ),
@@ -431,7 +474,7 @@ class _BusinessClickedPageState extends State<BusinessClickedPage> {
 // }
 
 Future<void> showDeleteConfirmationDialog(
-    BuildContext context, String Id) async {
+    BuildContext context, String businessId) async {
   return showDialog<void>(
     context: context,
     barrierDismissible: false, // Prevent closing by tapping outside the dialog
@@ -448,15 +491,28 @@ Future<void> showDeleteConfirmationDialog(
           ),
           TextButton(
             onPressed: () async {
-              // Perform the delete action
               try {
+                // Step 1: Fetch and delete associated events
+                QuerySnapshot eventsSnapshot = await FirebaseFirestore.instance
+                    .collection('events')
+                    .where('organizer', isEqualTo: businessId)
+                    .get();
+
+                for (var doc in eventsSnapshot.docs) {
+                  await doc.reference.delete();
+                  print("Deleted event: ${doc.id}");
+                }
+
+                // Step 2: Delete the business profile
                 await FirebaseFirestore.instance
                     .collection('business')
-                    .doc(Id)
+                    .doc(businessId)
                     .delete();
+
                 print("Profile deleted successfully");
 
-                // Close the dialog
+                // Step 3: Navigate and show success message
+                Navigator.of(context).pop(); // Close the dialog
                 await Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
@@ -464,14 +520,15 @@ Future<void> showDeleteConfirmationDialog(
                   (Route<dynamic> route) => false,
                 );
 
-                // Optionally, navigate back or show a success message
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Profile deleted successfully")),
+                  SnackBar(
+                      content: Text(
+                          "Profile and associated events deleted successfully")),
                 );
               } catch (e) {
-                print("Error deleting profile: $e");
+                print("Error deleting profile or events: $e");
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Error deleting profile")),
+                  SnackBar(content: Text("Error deleting profile or events")),
                 );
               }
             },

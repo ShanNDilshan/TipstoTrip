@@ -83,162 +83,187 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        toolbarHeight: 220,
-        backgroundColor: const Color(0xFF15AAB7),
-        title: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 20,
+        toolbarHeight: 170,
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        title: Container(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.only(
+              bottomRight: Radius.circular(30.0),
+              bottomLeft: Radius.circular(30.0),
+            ),
+            color: const Color.fromARGB(255, 255, 255, 255),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 2,
+                blurRadius: 5,
+                offset: Offset(0, 3),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      //Add location
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              // Navigate to ProfilePage
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const ProfilePage()),
-                              );
-                            },
-                            child: CircleAvatar(
-                              radius: 30,
-                              foregroundImage: NetworkImage(
-                                FirebaseAuth.instance.currentUser!.photoURL
-                                    .toString(),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        //Add location
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                // Navigate to ProfilePage
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ProfilePage()),
+                                );
+                              },
+                              child: CircleAvatar(
+                                radius: 30,
+                                foregroundImage: NetworkImage(
+                                  FirebaseAuth.instance.currentUser!.photoURL
+                                      .toString(),
+                                ),
                               ),
                             ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              FirebaseAuth.instance.currentUser!.displayName
+                                  .toString(),
+                              style: const TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 0, 0, 0),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                      ],
+                    ),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.notifications,
+                        size: 30,
+                        color: Color.fromARGB(255, 0, 0, 0),
+                      ),
+                      tooltip: 'Show Snackbar',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const NotificationPage(),
                           ),
-                          Text(
-                            FirebaseAuth.instance.currentUser!.displayName
-                                .toString(),
-                            style: const TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold,
+                        );
+                      },
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const BusinessForm(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 4, vertical: 5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: const Color.fromARGB(255, 209, 209, 209),
+                        ),
+                        child: const Text(
+                          "List Your business",
+                          style: TextStyle(
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: const Color.fromARGB(255, 168, 184, 198),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.search),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          SizedBox(
+                            width: MediaQuery.sizeOf(context).width / 3,
+                            height: 30,
+                            child: TextFormField(
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                fillColor: Color.fromARGB(255, 177, 185, 186),
+                                hintText: "Search..",
+                              ),
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                    ],
-                  ),
-                  IconButton(
-                    icon: const Icon(
-                      Icons.notifications,
-                      size: 30,
                     ),
-                    tooltip: 'Show Snackbar',
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const NotificationPage(),
-                        ),
-                      );
-                    },
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const BusinessForm(),
-                        ),
-                      );
-                    },
-                    child: Container(
+                    Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 4, vertical: 5),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: const Color.fromARGB(255, 209, 209, 209),
+                        color: const Color(0xFF57C1CA),
                       ),
-                      child: const Text(
-                        "List Your business",
-                        style: TextStyle(
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.search),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        SizedBox(
-                          width: MediaQuery.sizeOf(context).width / 2,
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
-                              fillColor: Color(0xFF15AAB7),
-                              hintText: "Search..",
+                      child: const Row(
+                        children: [
+                          Icon(
+                            Icons.list,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                          SizedBox(
+                            width: 3,
+                          ),
+                          Text(
+                            "Filters",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.white,
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 4, vertical: 5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: const Color(0xFF57C1CA),
-                    ),
-                    child: const Row(
-                      children: [
-                        Icon(
-                          Icons.list,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                        SizedBox(
-                          width: 3,
-                        ),
-                        Text(
-                          "Filters",
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-            ],
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -263,6 +288,9 @@ class _HomePageState extends State<HomePage> {
                     itemCount: docs.length,
                     itemBuilder: (context, index) {
                       final doc = docs[index];
+                      if (doc['businessName'] == null || doc['image'] == null) {
+                        return const SizedBox(); // Skip if critical data is missing
+                      }
                       return Padding(
                         padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
                         child: InkWell(

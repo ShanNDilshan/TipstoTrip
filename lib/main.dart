@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
@@ -32,6 +33,16 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   static final NavigatorKey = GlobalKey<NavigatorState>();
+
+  @override
+  void initState() {
+    clearCache(); // Clear cache when the widget is initialized
+  }
+
+  // Function to clear cache
+  Future<void> clearCache() async {
+    await DefaultCacheManager().emptyCache();
+  }
 
   @override
   Widget build(BuildContext context) {

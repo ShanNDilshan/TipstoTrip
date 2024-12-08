@@ -6,8 +6,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:prototype/components/ButtonOne.dart';
 import 'package:prototype/components/TextInputArea.dart';
+import 'package:prototype/services/location_service.dart';
 import 'package:uuid/uuid.dart';
 
 class PostOffer extends StatefulWidget {
@@ -26,7 +28,10 @@ class _PostOfferState extends State<PostOffer> {
 
   bool isloading = false;
   PlatformFile? pickedFile;
+  String selectedAddress = '';
+  LatLng? selectedLocation;
 
+  TextEditingController locationController = TextEditingController();
   TextEditingController offerName = TextEditingController();
   TextEditingController offerDate = TextEditingController();
   TextEditingController offerTime = TextEditingController();
@@ -34,6 +39,20 @@ class _PostOfferState extends State<PostOffer> {
   TextEditingController aboutOffer = TextEditingController();
   TextEditingController paymentMethod = TextEditingController();
   UploadTask? uploadTask;
+
+  //LocationPicker
+  Future<void> _pickLocation() async {
+    final result = await LocationService.showLocationPicker(context);
+
+    if (result != null) {
+      setState(() {
+        selectedLocation = result['location'];
+        selectedAddress = result['address'];
+        locationController.text = selectedAddress;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Future selectFiles() async {
@@ -131,7 +150,7 @@ class _PostOfferState extends State<PostOffer> {
             'saved': [], // Empty array for saved
             'id': eventId,
             'image': urlDownload,
-            'location': offerLocation.text,
+            'location': locationController.text,
             'name': offerName.text,
             'organizer': widget.iD, // Using passed ID as organizer
             'posted': currentTime,
@@ -176,13 +195,21 @@ class _PostOfferState extends State<PostOffer> {
         children: [
           // Fixed Header
           Container(
-            height: 250,
+            height: 200,
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.only(
                 bottomRight: Radius.circular(30.0),
                 bottomLeft: Radius.circular(30.0),
               ),
-              color: const Color(0xFF15AAB7),
+              color: const Color.fromARGB(255, 255, 255, 255),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 3),
+                ),
+              ],
             ),
             padding: const EdgeInsets.all(10),
             child: Row(
@@ -206,9 +233,9 @@ class _PostOfferState extends State<PostOffer> {
                         child: Text(
                           widget.doc[widget.ind]['business_name'],
                           style: const TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                          ),
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(255, 0, 0, 0)),
                         ),
                       ),
                     ],
@@ -225,8 +252,15 @@ class _PostOfferState extends State<PostOffer> {
           Align(
             alignment: Alignment.bottomCenter,
             child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(
+                    const Color.fromARGB(255, 255, 255, 255)),
+              ),
               onPressed: () {},
-              child: Text(" Post Offer "),
+              child: Text(
+                " Post Offer ",
+                style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
+              ),
             ),
           ),
           const SizedBox(height: 15),
@@ -273,10 +307,33 @@ class _PostOfferState extends State<PostOffer> {
                           SizedBox(
                             height: 15,
                           ),
-                          TextInputArea(
-                            label: "Offer Location",
-                            TextEditingController: offerLocation,
-                            icon: const Icon(null),
+                          GestureDetector(
+                            onTap: _pickLocation,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 15),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      selectedAddress.isEmpty
+                                          ? 'Select Business Location'
+                                          : selectedAddress,
+                                      style: TextStyle(
+                                        color: selectedAddress.isEmpty
+                                            ? Colors.grey
+                                            : Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                  const Icon(Icons.location_on),
+                                ],
+                              ),
+                            ),
                           ),
 
                           const SizedBox(

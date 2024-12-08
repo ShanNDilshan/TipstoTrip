@@ -35,7 +35,8 @@ class _MainPageState extends State<MainPage> {
         unselectedIconTheme: const IconThemeData(
           color: Colors.black,
         ),
-        selectedIconTheme: const IconThemeData(color: Colors.blue),
+        selectedIconTheme:
+            const IconThemeData(color: Color.fromARGB(255, 7, 61, 106)),
         selectedLabelStyle: const TextStyle(
           color: Colors.black,
         ),

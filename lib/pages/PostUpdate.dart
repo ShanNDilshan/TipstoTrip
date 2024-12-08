@@ -5,9 +5,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:prototype/components/ButtonOne.dart';
 import 'package:prototype/components/TextInputArea.dart';
+import 'package:prototype/services/location_service.dart';
 
 class UpdateEventPage extends StatefulWidget {
   final String iD;
@@ -26,7 +28,10 @@ class _UpdateEventPageState extends State<UpdateEventPage> {
   PlatformFile? pickedFile;
   String? selectedEventId;
   List<Map<String, dynamic>> eventsList = [];
+  String selectedAddress = '';
+  LatLng? selectedLocation;
 
+  TextEditingController locationController = TextEditingController();
   TextEditingController updateEventName = TextEditingController();
   TextEditingController updateEventDate = TextEditingController();
   TextEditingController updateEventTime = TextEditingController();
@@ -43,6 +48,19 @@ class _UpdateEventPageState extends State<UpdateEventPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       fetchEvents();
     });
+  }
+
+  //LocationPicker
+  Future<void> _pickLocation() async {
+    final result = await LocationService.showLocationPicker(context);
+
+    if (result != null) {
+      setState(() {
+        selectedLocation = result['location'];
+        selectedAddress = result['address'];
+        locationController.text = selectedAddress;
+      });
+    }
   }
 
   Future<bool> isImageUrlValid(String imageUrl) async {
@@ -187,7 +205,7 @@ class _UpdateEventPageState extends State<UpdateEventPage> {
         if (updateEventTime.text.isNotEmpty)
           updateData['time'] = updateEventTime.text;
         if (updateEventLocation.text.isNotEmpty)
-          updateData['location'] = updateEventLocation.text;
+          updateData['location'] = locationController.text;
         if (updateAboutEvent.text.isNotEmpty)
           updateData['about'] = updateAboutEvent.text;
         if (updatePaymentMethod.text.isNotEmpty)
@@ -281,13 +299,21 @@ class _UpdateEventPageState extends State<UpdateEventPage> {
       body: Column(
         children: [
           Container(
-            height: 250,
+            height: 200,
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.only(
                 bottomRight: Radius.circular(30.0),
                 bottomLeft: Radius.circular(30.0),
               ),
-              color: const Color(0xFF15AAB7),
+              color: const Color.fromARGB(255, 255, 255, 255),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 3),
+                ),
+              ],
             ),
             // color: const Color(0xFF15AAB7),
             padding: const EdgeInsets.all(10),
@@ -349,9 +375,9 @@ class _UpdateEventPageState extends State<UpdateEventPage> {
                           child: Text(
                             widget.doc[widget.ind]['business_name'],
                             style: const TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold,
-                            ),
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 0, 0, 0)),
                           ),
                         ),
                       ],
@@ -365,8 +391,15 @@ class _UpdateEventPageState extends State<UpdateEventPage> {
           Align(
             alignment: Alignment.bottomCenter,
             child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(
+                    const Color.fromARGB(255, 255, 255, 255)),
+              ),
               onPressed: () {},
-              child: Text(" Post Update "),
+              child: Text(
+                " Post Update ",
+                style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
+              ),
             ),
           ),
           Expanded(
@@ -426,10 +459,33 @@ class _UpdateEventPageState extends State<UpdateEventPage> {
                       icon: const Icon(null),
                     ),
                     SizedBox(height: 15),
-                    TextInputArea(
-                      label: "Update Location",
-                      TextEditingController: updateEventLocation,
-                      icon: const Icon(null),
+                    GestureDetector(
+                      onTap: _pickLocation,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 15),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                selectedAddress.isEmpty
+                                    ? 'Select Business Location'
+                                    : selectedAddress,
+                                style: TextStyle(
+                                  color: selectedAddress.isEmpty
+                                      ? Colors.grey
+                                      : Colors.black,
+                                ),
+                              ),
+                            ),
+                            const Icon(Icons.location_on),
+                          ],
+                        ),
+                      ),
                     ),
                     SizedBox(height: 15),
                     ClipRRect(

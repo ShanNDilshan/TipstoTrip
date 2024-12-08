@@ -90,50 +90,62 @@ class _NotificationPageState extends State<NotificationPage> {
                                             .doc(docs[index]['organizer'])
                                             .snapshots(),
                                         builder: (context, snapshot) {
-                                          if (!snapshot.hasData) {
-                                            return const CircularProgressIndicator();
-                                          } else {
-                                            var doc = snapshot.data;
-                                            return Row(
-                                              children: [
-                                                CircleAvatar(
-                                                  radius: 30,
-                                                  backgroundColor:
-                                                      Colors.blueAccent,
-                                                  foregroundImage: NetworkImage(
-                                                    doc!['image'],
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      doc['business_category'],
-                                                      textAlign: TextAlign.left,
-                                                      style: const TextStyle(
-                                                        fontSize: 16,
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      docs[index]['name'],
-                                                      textAlign: TextAlign.left,
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                        color: Colors.black,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            );
+                                          if (snapshot.hasError) {
+                                            return const Text(
+                                                'Something went wrong');
                                           }
+
+                                          if (!snapshot.hasData ||
+                                              !snapshot.data!.exists) {
+                                            return const SizedBox();
+                                          }
+
+                                          var doc = snapshot.data!.data();
+                                          if (doc == null) {
+                                            return const Text(
+                                                'No data available');
+                                          }
+
+                                          return Row(
+                                            children: [
+                                              CircleAvatar(
+                                                radius: 30,
+                                                backgroundColor:
+                                                    Colors.blueAccent,
+                                                foregroundImage: doc['image'] !=
+                                                        null
+                                                    ? NetworkImage(doc['image'])
+                                                    : null,
+                                              ),
+                                              const SizedBox(width: 10),
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    doc['business_name'] ??
+                                                        'No category',
+                                                    textAlign: TextAlign.left,
+                                                    style: const TextStyle(
+                                                      fontSize: 16,
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    docs[index]['name'] ??
+                                                        'No name',
+                                                    textAlign: TextAlign.left,
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          );
                                         }),
                                     if (docs[index]['type'] == "event")
                                       Container(

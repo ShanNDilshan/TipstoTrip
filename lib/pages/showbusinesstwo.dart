@@ -36,9 +36,23 @@ class _ShowBusinesstwoPageState extends State<ShowBusinesstwoPage> {
             left: 0,
             right: 0,
             child: Container(
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                  bottomRight: Radius.circular(30.0),
+                  bottomLeft: Radius.circular(30.0),
+                ),
+                color: const Color.fromARGB(255, 255, 255, 255),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: Offset(0, 3),
+                  ),
+                ],
+              ),
               height: 250,
               width: double.infinity,
-              color: const Color(0xFF15AAB7),
               padding: const EdgeInsets.all(10),
               child: Row(
                 children: [
@@ -65,9 +79,9 @@ class _ShowBusinesstwoPageState extends State<ShowBusinesstwoPage> {
                             FirebaseAuth.instance.currentUser!.displayName
                                 .toString(),
                             style: const TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold,
-                            ),
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 0, 0, 0)),
                           ),
                         ),
                       ],
